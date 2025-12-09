@@ -19,7 +19,7 @@
 # RUN     chmod +x /usr/local/bin/init.sh
 
 # CMD ["/bin/bash", "/usr/local/bin/init.sh"]
-FROM debian:bookworm
+FROM debian:buster
 
 RUN apt-get -y update
 RUN apt install -y mariadb-server && apt-get install -y mariadb-client

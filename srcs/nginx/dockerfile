@@ -30,7 +30,7 @@
 # #Lancer NGINX
 # CMD	["/bin/bash", "/usr/local/bin/conf.sh"]
 
-FROM debian:bookworm
+FROM debian:buster
 
 RUN apt -y update
 RUN apt-get -y install openssl
