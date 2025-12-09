@@ -21,8 +21,8 @@
 # CMD ["/bin/bash", "/usr/local/bin/init.sh"]
 FROM debian:buster
 
-RUN apt-get -y update
-RUN apt install -y mariadb-server && apt-get install -y mariadb-client
+RUN apt -y update
+RUN apt install -y mariadb-server && apt install -y mariadb-client
 
 RUN mkdir -p /var/run/mysqld \
 && chown -R mysql:mysql /var/run/mysqld \
