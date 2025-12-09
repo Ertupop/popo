@@ -19,10 +19,10 @@
 # RUN     chmod +x /usr/local/bin/init.sh
 
 # CMD ["/bin/bash", "/usr/local/bin/init.sh"]
-FROM debian:buster
+FROM debian:bookworm
 
-RUN apt -y update
-RUN apt install -y mariadb-server && apt install -y mariadb-client
+RUN apt-get -y update
+RUN apt install -y mariadb-server && apt-get install -y mariadb-client
 
 RUN mkdir -p /var/run/mysqld \
 && chown -R mysql:mysql /var/run/mysqld \
