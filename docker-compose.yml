@@ -1,0 +1,66 @@
+services:
+  mariadb:
+    build:
+      context: ./srcs/mariadb
+      dockerfile: dockerfile
+    container_name: mariadb
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    networks:
+      - frontend
+    expose:
+      - "3306"
+
+
+  wordpress:
+    build:
+      context: ./srcs/wordpress
+      dockerfile: dockerfile
+    container_name: wordpress
+    restart: always
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress-data:/var/www/wordpress
+    env_file:
+      - .env
+    networks:
+      - frontend
+    expose:
+      - "9000"
+
+  nginx:
+    build:
+      context: ./srcs/nginx
+      dockerfile: dockerfile
+    container_name: nginx
+    restart: always
+    depends_on:
+      - wordpress
+    volumes:
+      - wordpress-data:/var/www/wordpress
+    networks:
+      - frontend
+    ports:
+      - "443:443"
+
+networks:
+  frontend:
+    driver: bridge
+
+volumes:
+  mariadb-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/pgiroux/data/mariadb
+  wordpress-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/pgiroux/data/wordpress

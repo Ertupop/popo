@@ -1,9 +1,35 @@
 #!/bin/bash
-service mysql start
+mysql_install_db
 
-mysql -e "CREATE DATABASE IF NOT EXISTS \`${SQL_DATABASE}\`;"
-mysql -e "CREATE USER IF NOT EXISTS '${SQL_USER}'@'localhost' IDENTIFIED BY '${SQL_PASSWORD}';"
-mysql -e "GRANT ALL PRIVILEGES ON \`${SQL_DATABASE}\`.* TO '${SQL_USER}'@'%' IDENTIFIED BY '${SQL_PASSWORD}';"
-mysql -e "FLUSH PRIVILEGES;"
-mysqladmin -u root -p${SQL_ROOT_PASSWORD} shutdown
+/etc/init.d/mysql start
+
+#Check if the database exists
+
+if [ -d "/var/lib/mysql/$DB_NAME" ]
+then
+
+	echo "Database already exists"
+else
+
+# Set root option so that connexion without root password is not possible
+
+mysql_secure_installation << _EOF_
+
+Y
+$DB_ROOT
+$DB_ROOT
+Y
+n
+Y
+Y
+_EOF_
+
+echo "GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY '$DB_USER_PASSWORD'; FLUSH PRIVILEGES;" | mysql -uroot
+
+echo "CREATE DATABASE IF NOT EXISTS $DB_NAME; GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'%' IDENTIFIED BY '$DB_USER_PASSWORD'; FLUSH PRIVILEGES;" | mysql -u root
+
+fi
+
+/etc/init.d/mysql stop
+
 exec mysqld_safe
