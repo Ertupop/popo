@@ -1,21 +1,36 @@
-FROM    debian:bookworm
+# FROM    debian:bookworm
 
-RUN     apt update -y
-RUN     apt-get install -y mariadb-server mariadb-client
+# RUN     apt update -y
+# RUN     apt-get install -y mariadb-server mariadb-client
 
-COPY    conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
+# COPY    conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 
-RUN     mkdir -p /var/run/mysqld
-# RUN     mkdir -p /var/lib/mysql
-RUN     chown -R mysql:mysql /var/run/mysqld/
-RUN     chmod 777 /var/run/mysqld/
-# RUN     chown mysql:mysql /var/lib/mysql/
-# RUN     chmod -R 755 /var/lib/mysql/
+# RUN     mkdir -p /var/run/mysqld
+# # RUN     mkdir -p /var/lib/mysql
+# RUN     chown -R mysql:mysql /var/run/mysqld/
+# RUN     chmod 777 /var/run/mysqld/
+# # RUN     chown mysql:mysql /var/lib/mysql/
+# # RUN     chmod -R 755 /var/lib/mysql/
 
-EXPOSE  3306
+# EXPOSE  3306
 
-COPY    ./conf/50-server.cnf /etc/mysql/my.cnf
-COPY    ./conf/init.sh /usr/local/bin/init.sh
-RUN     chmod +x /usr/local/bin/init.sh
+# COPY    ./conf/50-server.cnf /etc/mysql/my.cnf
+# COPY    ./conf/init.sh /usr/local/bin/init.sh
+# RUN     chmod +x /usr/local/bin/init.sh
+
+# CMD ["/bin/bash", "/usr/local/bin/init.sh"]
+FROM debian:bookworm
+
+RUN apt-get -y update
+RUN apt install -y mariadb-server && apt-get install -y mariadb-client
+
+RUN mkdir -p /var/run/mysqld \
+&& chown -R mysql:mysql /var/run/mysqld \
+&& chmod 777 /var/run/mysqld
+
+COPY		./conf/mysqld.conf /etc/mysql/my.cnf
+COPY ./conf/init.sh /usr/local/bin/init.sh
+
+EXPOSE 3306
 
 CMD ["/bin/bash", "/usr/local/bin/init.sh"]
